@@ -5,7 +5,7 @@ const { User, Owner} = require("../../Models");
 const { LOCAL } = require("../constVariables");
 //Upload Image
 
-Router.post('/user/:userId', myUpload.array('profileImage', 1), async(req, res) =>{
+Router.patch('/user/:userId', myUpload.array('profileImage', 1), async(req, res) =>{
     // const {originalname}=req.file;
     console.log("Profile Image  Uploading")
     console.log("File Input");
@@ -69,7 +69,11 @@ Router.post('/user/:userId', myUpload.array('profileImage', 1), async(req, res) 
     // } )
   
 });
-
+// // updating user Image
+// Router.patch("user/updateImage/:userId",myUpload.array('profileImage',1),(req,res)=>
+// {
+//     User.findOne()
+// })
 Router.post('/owner/:ownerId', myUpload.array('profileImage', 1), async(req, res) =>{
     // const {originalname}=req.file;
     console.log("Profile Image  Uploading")
