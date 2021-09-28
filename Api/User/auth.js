@@ -9,16 +9,41 @@ const { signUpValidation, loginValidation, emailValidation, emailVerification, r
 const {SOCIAL, LOCAL}=require("../constVariables");
 
 // const  client=new OAuth2Client("663357206943-37kejls5uce3mfp6mnars657j7dr8iu3.apps.googleusercontent.com");
-    // server response
+    // getting total number of users
+Router.get("/records",(req,res)=>{
+    User.find().count().then(foundUser=>
+        {
+
+            console.log(foundUser)
+            //  console.log("sdsdf",foundUser*1234)
+             if(foundUser)
+             {
+                return res.json({message:"Users Found",users:foundUser,success:true}).status(200)
+             }
+             else
+             {
+                 
+                return res.json({error:{message:"User Not Exists",errorCode:500},success:false}).status(400)
+             }
+            
+        }).catch(err=>
+            {
+                console.log(err)
+                return res.json({ error: {  message: "Catch Error,User Not Found", errorCode : 500} , success: false}).status( 500 );
+            })
+})
+// server response
     Router.get("/",(req,res)=>{
         User.find().then(findUser=>
             {
+                // console.log(findUser*1234)
                 if(findUser)
                 {
                     return res.json({message:"Users Found",users:findUser,success:true}).status(200)
                 }
                 else
                 {
+                    
                     return res.json({error:{message:"User Not Exists",errorCode:500},success:false}).status(400)
                 }
             }).catch(err=>
@@ -544,218 +569,5 @@ Router.put("/changePassword",(req,res)=>
 
 })
 
-// Router.post('/googleLogin', (req, res)=>{
-//     const {tokenId}=req.body;
-//     console.log("Googele Api Input");
-//     console.log(req.body);
-    
-//     console.log("tokenId",tokenId)
-
-//     client.verifyIdToken({idToken:tokenId, audience:"663357206943-37kejls5uce3mfp6mnars657j7dr8iu3.apps.googleusercontent.com"})
-//     .then(response=>{
-//         const {email_verified, firstName,lastName, email, picture}=response.payload;
-//         console.log("response.payload");
-//         console.log(response.payload);
-//         if(email_verified){
-//             User.findOne({email}).exec((err, googelUser)=>{
-//                 if(err){
-//                     return res.json({ error: { message: "Something went wrong...." , errorCode: 500} , success: false});
-//                 }else{
-//                     if(googelUser){
-//                         const {_id, firstName,lastName, email, image,accountType, phoneNumber, address}=googelUser;
-//                         return  res.json({message:"You Logged in", user:{_id, firstName,lastName, email, image,accountType, phoneNumber, address}, success:true}).status(200);
-//                     }else{
-//                         const gooUser = new User({
-//                             firstName:firstName,
-//                             lastName:lastName,
-//                             email:email,
-//                             image:picture,
-//                             accountType:SOCIAL
-//                         }) 
-//                         gooUser.save().then(savedUser=>{
-//                             if(savedUser){
-//                                 let newCreatedUser = {
-//                                     _id : savedUser._id,
-//                                     firstName:firstName,
-//                                     lastName:lastName,
-//                                     email:email,
-//                                     image:savedUser.image,
-//                                     createdAt : savedUser.createdAt,
-//                                     accountType:savedUser.accountType
-//                                 }
-//                                 return  res.json({message:"Google Login Successfully", user: newCreatedUser, success:true}).status(200);
-//                             }
-//                             else{
-//                                 return res.json({error:{message:"Google Login Failed", errorCode: 500}, success:false}).status(500)
-//                             }
-//                         }).catch(err=>{
-//                            return res.json({error:{message:"Google Login Catch Error",err, errorCode: 500}, success:false}).status(500)
-//                         })
-//                     }
-//                 }
-//             })
-//         }         
-//     })
-// })
-// finding subscription of particular user
-// Router.get("/sub",(req,res)=>{
-//     const {user}=req.body;
-//     // User.findOne
-//     Subscription.findOne({userId:user._id}).then(userSubscription=>{
-//         if(userSubscription!==null){
-//         return res.json({message:"User Subscription Found",user:userSubscription,success:true}).status(200)
-//         }
-//     }).catch(err=>{
-//         return res.json({error:{message:"Catch Error While Finding User In Subscription",err, errorCode: 500}, success:false}).status(500)
-//     })
-// })
-
 module.exports = Router;
 
-// if(validated)
-// {
-//    // finding user against id
-//    User.findOne({_id:user._id}).then(userFound=>
-//     {
-//       if(!userFound)
-//         {
-//          console.log(userFound)
-//          return res.json({error:{messsage:"User Not Exist Against Id"},success:false}).status(400)
-//         }
-//       bcrypt.compare(user.oldPassword, userFound.password).then(result=>{
-//        if(result)
-//         {
-//          console.log(result)
-//          // return res.json({message:"password matched", success:true}).status(200);
-//          bcrypt.genSalt(10, (err, salt)=>
-//             {
-//               if(err)
-//                 {
-//                  return res.json({error:{message:"Password not Salt", errorCode:500}, success:false}).status(500);
-//                 }
-//               else
-//                {
-//                  bcrypt.hash(user.password, salt, ( err, hash ) =>{
-//                     if(err){
-//                         return res.json({error:{message:"Password not Hashed", errorCode:500}, success:false}).status(500); 
-//                     }else{
-//                         const newUser={
-//                             password:hash,
-//                         }
-//                         User.updateOne({_id:user._id}, {$set: { password:newUser.password}})
-//                             .then(updateUser=>{
-//                                 if(updateUser){
-//                                     User.findOne({_id:user._id})
-//                                     .then(foundUser=>{
-//                                         if(!foundUser){
-//                                             return res.json({error:{message:"User Not Found", success:false}}).status(500);
-//                                         }else{
-//                                             return res.json({message:"Password Updated", user:foundUser, success:true}).status(200)
-//                                         }
-//                                     })
-//                                 }
-//                                 else{
-//                                     return res.json({error:{message:"Password not Updated", errorCode:500}, success:false}).status(500); 
-//                                 }
-//                             }).catch(err=>{
-//                                 return res.json({error:{message:err.message, errorCode:500},success:false}).status(500);
-//                             })
-//                     }
-//                 }).catch(err=>{
-//                     console.log(err)
-//                     return res.json({error:{message:"Catch Error While Password Converting In To Hashing",errorCode:500},success:false}).status(400)
-//                 })
-//             }
-//         }).catch(err=>{
-//             console.log(err)
-//             return res.json({error:{message:"Catch Error While Password Converting In To Salt",errorCode:500},success:false}).status(400)
-//         })
-//     }  
-// }).catch(err=>{
-//     console.log(err)
-//     return res.json({error:{message:"Catch Error While Comparison",errorCode:500},success:false}).status(400)
-// })
-// })
-// }
-// else
-// {
-// return res.json({error:{message:"Validation Error",errorCode:500},success:false}).status(400)
-// }
-// const {user} = req.body;
-//     changePassword.validateAsync(user).then(validated=>
-//     {
-//         if(validated)
-//         {
-//             User.findOne({_id:user._id}).then(findRecord=>{
-//                 console.log(findRecord)
-//                 if(findRecord===null)
-//                 {
-//                     return res.json({error:{message:"User Not Found",errorCode:500},success:false}).status(400)
-//                 }
-//                 else
-//                 {
-//                     bcrypt.compare(user.oldPassword, findRecord.password).then(result=>{
-//                         console.log(result)
-//                         console.log(user.oldPassword)
-//                         console.log(findRecord.password)
-//                         if(!result)
-//                         {
-//                             return res.json({error:{message:"Error While Comparing Password",errorCode:500},success:false}).status(400)
-//                         }
-//                         else
-//                         {
-//                             bcrypt.genSalt(10, (err, salt)=>{
-//                                 if(err)
-//                                 {
-//                                     return res.json({error:{message:"Password not Salt", errorCode:500}, success:false}).status(500);
-//                                 }
-//                                 else
-//                                 {
-//                                     bcrypt.hash(user.password, salt, ( err, hash ) =>{
-//                                         if(err)
-//                                         {
-//                                             return res.json({error:{message:"Password not Hash", errorCode:500}, success:false}).status(500);
-//                                         }
-//                                         else
-//                                         {
-//                                             // const newUser={
-//                                             //     password:hash
-//                                             // }
-//                                             User.findOneAndUpdate({_id:user._id},{$set:{password:hash}}).then(updated=>{
-//                                                 if(!updated)
-//                                                 {
-//                                                     return res.json({error:{message:"Password UPdation Failed",errorCode:500},success:false}).status(400);
-//                                                 }
-//                                                 else
-//                                                 {
-//                                                     return res.json({message:"Password Updated Successfully",user:updated,success:true}).status(200)
-//                                                 }
-//                                             }).catch(err=>{
-//                                                 return res.json({error:{message:"Catch Error While Updating Password",errorCode:500},success:false}).status(400)   
-//                                             })
-//                                         } 
-//                                     }).catch(err=>{
-//                                         return res.json({error:{message:"Catch Error Password not Hash", errorCode:500}, success:false}).status(500);
-//                                     })
-//                                 }
-//                             }) 
-//                         }
-
-//                     })
-//                 }
-//             }).catch(err=>{
-//                 return res.json({error:{message:"Catch Error While Finding User",errorCode:500},success:false}).status(400)
-//             })
-//         }
-//         else
-//         {
-//             return res.json({error:{message:"Validation Error",errorCode:500},success:false}).status(400)
-//         }
-     
-//     }).catch(err =>{
-//         if( err.isJoi === true ){
-//             return res.json({ error: { message: err.message , errorCode: 500} , success: false});
-//         }else{
-//             return res.json({ error: {  message: "Catch Error,change Passsword", errorCode : 500} , success: false}).status( 500 );
-//         }
-//     })
