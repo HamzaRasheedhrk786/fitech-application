@@ -17,7 +17,8 @@ Router.use("/location",require("../Api/Location/auth"))
 Router.use("/service",require("../Api/Services/auth"))
 // gym rout
 Router.use("/gym",require("../Api/Gym/auth"))
-
+// check in
+Router.use("/checkIn",require("../Api/CheckIns/auth"))
 
 // module.exports=Router;
 module.exports =Router;

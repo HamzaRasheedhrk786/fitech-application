@@ -327,10 +327,18 @@ Router.patch("/cancelSubscriptionUser",(req,res)=>{
                         else{
                             console.log("existing date",findUserRec.paymentDate)
                         let date = new Date(findUserRec.paymentDate);
-                        date.setDate(date.getDate() + 30);
+                        // date.setDate(date.getDate() + 3);
+                        // date.setHours(0,0,0,0)
+                        let crdate= new Date(Date.now())
+                        // crdate.setHours(0,0,0,0)
                         console.log("date",date);
-                        console.log("diff",(date-findUserRec.paymentDate===30))
-                           if(date-findUserRec.paymentDate===30)
+                        console.log("crdate",crdate)
+                        let diffTime=Math.abs(crdate-date);
+                        console.log("timediff",diffTime)
+                        let diffDays=Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        console.log(diffDays)
+                        console.log("diff",(diffDays===3))
+                           if(diffDays===3)
                            {
                                UserPayment.findOneAndUpdate({userId:subscription.userId},{$set:{status:"inactive"}}).sort({_id:-1}).then(fnd=>{
                                    console.log("aas")

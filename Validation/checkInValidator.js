@@ -13,7 +13,7 @@ const addCheckInValidation = Joi.object({
     }),
     
 }).required().messages({
-    "any.required":"Invalid User Data"
+    "any.required":"Invalid CheckIn Data"
 })
 module.exports = {
     addCheckInValidation
