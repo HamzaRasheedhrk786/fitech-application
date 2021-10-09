@@ -23,6 +23,8 @@ conn.once('open', ()=>{
       url: URL,
       options:{useUnifiedTopology:true,useNewUrlParser:true},
       file: (req, file) => {
+        
+        
         return new Promise((resolve, reject) => {
           crypto.randomBytes(16, (err, buf) => {
             if (err) {
@@ -33,9 +35,17 @@ conn.once('open', ()=>{
               filename: filename,
               bucketName: 'uploads'
             };
+          
             // fileFilter,
             resolve(fileInfo);
           });
+          // if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
+          //   return {
+          //     bucketName: 'uploads'
+          //   };
+          // } else {
+          //   return "please select jpg jpeg png"
+          // }
         });
       }
     });

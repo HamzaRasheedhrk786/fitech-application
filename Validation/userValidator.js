@@ -3,13 +3,15 @@ const Joi= require('joi')
 const {ref} = require('joi')
 // input fields varification
 const signUpValidation = Joi.object({
-    firstName: Joi.string().required().messages({
+    firstName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("firstName").required().messages({
         "any.required": "First Name Required",
         "string.empty": "Invalid First Name",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
-    lastName: Joi.string().required().messages({
+    lastName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("lastName").required().messages({
         "any.required": "Last Name Required",
         "string.empty": "Invalid Last Name",
+        'string.pattern.base': '{#label} must be in aiphabets',
     }),
     email: Joi.string().email().required().messages({
         "any.required": "Email Required",
@@ -23,9 +25,12 @@ const signUpValidation = Joi.object({
         'any.only': "Passwords didn't Match",
         "any.required": "Invalid Confirm Password"
     }),
-    phoneNumber:Joi.string().min(11).max(11).required().messages({
+    phoneNumber:Joi.string().pattern(new RegExp(/^[0-9]+$/)).label("phoneNumber").min(11).max(11).required().messages({
         "string.min": "Phone Number,Max (11) Numbers Required",
-        "any.required": "Phone Number Required"
+        "any.required": "Phone Number Required",
+        'string.pattern.base': '{#label} must be in number',
+        'string.base': '{#label} should be a type of "number"',
+        // "s.pattern":"Phone Must be ENter in numbers"
     }),
     address:Joi.string().required().messages({
         "any.required": "Address Required",
@@ -97,21 +102,26 @@ const profileValidation = Joi.object({
     _id:Joi.string().required().messages({
         "any.required": "Id Required",
     }),
-    firstName: Joi.string().required().messages({
+    firstName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("firstName").required().messages({
         "any.required": "First Name Required",
         "string.empty": "Invalid First Name",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
-    lastName: Joi.string().required().messages({
+    lastName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("lastName").required().messages({
         "any.required": "Last Name Required",
         "string.empty": "Invalid Last Name",
+        'string.pattern.base': '{#label} must be in number',
     }),
     email:Joi.string().required().email().messages({
         "any.required": "Email Required",
         "string.email":"Invalid Email"
     }),
-    phoneNumber:Joi.string().max(11).required().messages({
-        "string.min": "Phone Number,Minimum (11) Numbers Required",
-        "any.required": "Phone Number Required"
+    phoneNumber:Joi.string().pattern(new RegExp(/^[0-9]+$/)).label("phoneNumber").min(11).max(11).required().messages({
+        "string.min": "Phone Number,Max (11) Numbers Required",
+        "any.required": "Phone Number Required",
+        'string.pattern.base': '{#label} must be in number',
+        'string.base': '{#label} should be a type of "number"',
+        // "s.pattern":"Phone Must be ENter in numbers"
     }),
     address:Joi.string().required().messages({
         "any.required": "Address Required",

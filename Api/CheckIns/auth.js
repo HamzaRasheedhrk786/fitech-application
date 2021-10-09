@@ -5,7 +5,21 @@ const {addCheckInValidation}=require("../../Validation/checkInValidator")
 // getting response of checkIn server
 Router.get("/",(req,res)=>
 {
-    return res.json({message:"Check In Server Runinng"})
+    CheckIn.find().then(allRecords=>
+        {
+            if(!allRecords)
+            {
+                return res.json({error:{message:"User Not Found",errorCode:500},success:false}).status(400)
+            }
+            else
+            {
+                return res.json({message:"All CheckIn Table Record",checkIn:allRecords,success:true}).status(200)
+            }
+        }).catch(err=>
+            {
+                return res.json({error:{message:"Catch Error While Getting CheckIn Table Data",errorCode:500},success:false}).status(400)
+            })
+    // return res.json({message:"Check In Server Runinng"})
 })
 // posting checkIn request by user
 Router.post("/user",(req,res)=>
@@ -88,7 +102,7 @@ Router.post("/user",(req,res)=>
                                                 // console.log("check",(subUser.amount>=gymFound.monthlyFee))
                                                 console.log(subUser.amount)
                                                 console.log(gymFound.monthlyFee)
-                                               if(diffDays===1)
+                                               if(diffDays>=1 )
                                                {
                                                    
                                                 if(subUser.amount>=gymFound.monthlyFee)

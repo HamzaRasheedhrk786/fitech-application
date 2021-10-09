@@ -3,17 +3,21 @@ const Joi= require('joi')
 const {ref} = require('joi')
 // input fields varification
 const signUpValidationOwner = Joi.object({
-    name: Joi.string().required().messages({
-        "any.required": "Name Required",
-        "string.empty": "Name Can't Be Empty",
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("name").required().messages({
+        "any.required": " Name Required",
+        "string.empty": "Invalid Name",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
     email: Joi.string().email().required().messages({
         "any.required": "Email Required",
         "string.email":"Invalid Email"
     }),
-    phoneNo:Joi.string().min(11).max(11).required().messages({
+    phoneNo:Joi.string().pattern(new RegExp(/^[0-9]+$/)).label("phoneNo").min(11).max(11).required().messages({
         "string.min": "Phone Number,Max (11) Numbers Required",
-        "any.required": "Phone Number Required"
+        "any.required": "Phone Number Required",
+        'string.pattern.base': '{#label} must be in number',
+        'string.base': '{#label} should be a type of "number"',
+        // "s.pattern":"Phone Must be ENter in numbers"
     }),
     password: Joi.string().min(8).required().messages({
         "any.required": "Password Minumum 8 Character Required",

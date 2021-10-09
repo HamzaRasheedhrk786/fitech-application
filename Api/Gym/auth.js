@@ -1,6 +1,6 @@
 const Router= require('express').Router();
 // exporting model gym7
-const {Gym, Owner, Service}=require("../../Models")
+const {Gym, Owner, Service, CheckIn}=require("../../Models")
 const {addGymValidation, updateGymValidation}=require("../../Validation/gymValidator")
 // const {upload} = require("../../storage")();
 const myUpload = require("../../Storage/storage").upload;
@@ -403,5 +403,104 @@ Router.delete("/owner/deleteGym",(req,res)=>
         }).catch(err=>{
             return res.json({error:{message:"Catch Error While Finding Owner In Gym",errorCode:500},success:false}).status(400)
         })
+})
+// Finding gym user agaisnt gym in checkin
+Router.get("/user",(req,res)=>
+{
+    const {gym} =req.body;
+    Gym.findOne({_id:gym.gym}).then(findGym=>
+        {
+            if(!findGym)
+            {
+                return res.json({error:{message:"Gym Not Exists Against Id",errorCode:500},success:false}).status(400)
+            }
+            else
+            {
+                CheckIn.find({gym:gym.gym}).populate("user","firstName email image").then(userRecord=>
+                    {
+                        if(userRecord)
+                        {
+                            return res.json({message:"User Record Found Against Gym",gymUser:userRecord,success:true}).status(200)
+                        }
+                        else
+                        {
+                            return res.json({error:{message:"Erroe While Finding Gym User",errorCode:500},success:false}).status(400)
+                        }
+                    }).catch(err=>
+                        {
+                            return res.json({error:{message:"Catch Error While Finding Gym In User Check In",errorCode:500},success:false}).status(400)
+                        })
+            }
+        }).catch(err=>
+            {
+                return res.json({error:{message:"Catch Error While Finding Gym In Gym",errorCode:500},success:false}).status(400)
+            })
+}) 
+// total visits against gym
+Router.get("/visits",(req,res)=>
+{
+    const {gym} =req.body;
+    Gym.findOne({_id:gym.gym}).then(findGym=>
+        {
+            if(!findGym)
+            {
+                return res.json({error:{message:"Gym Not Exists Against Id",errorCode:500},success:false}).status(400)
+            }
+            else
+            {
+                CheckIn.find({gym:gym.gym,status:"active"}).count().then(userRecord=>
+                    {
+                        if(userRecord)
+                        {
+                            return res.json({message:"User Record Found Against Gym",gymUser:userRecord,success:true}).status(200)
+                        }
+                        else
+                        {
+                            return res.json({error:{message:"Erroe While Finding Gym User",errorCode:500},success:false}).status(400)
+                        }
+                    }).catch(err=>
+                        {
+                            return res.json({error:{message:"Catch Error While Finding Gym In User Check In",errorCode:500},success:false}).status(400)
+                        })
+            }
+        }).catch(err=>
+            {
+                return res.json({error:{message:"Catch Error While Finding Gym In Gym",errorCode:500},success:false}).status(400)
+            })   
+})
+// get gym revenue against gym
+Router.get("/revenue",(req,res)=>
+{
+    const {gym} =req.body;
+    Gym.findOne({_id:gym.gym}).then(findGym=>
+        {
+            if(!findGym)
+            {
+                return res.json({error:{message:"Gym Not Exists Against Id",errorCode:500},success:false}).status(400)
+            }
+            else
+            {
+                CheckIn.find({gym:gym.gym,status:"active"}).count().then(userRecord=>
+                    {
+                        if(userRecord)
+                        {
+                            console.log(findGym.monthlyFee)
+                            let revenue= (findGym.monthlyFee/30)*(userRecord);
+                            console.log(revenue);
+                            return res.json({message:"User Record Found Against Gym",gymRevenue:revenue,success:true}).status(200)
+                        }
+                        else
+                        {
+                            return res.json({error:{message:"Erroe While Finding Gym User",errorCode:500},success:false}).status(400)
+                        }
+                    }).catch(err=>
+                        {
+                            return res.json({error:{message:"Catch Error While Finding Gym In User Check In",errorCode:500},success:false}).status(400)
+                        })
+            }
+        }).catch(err=>
+            {
+                return res.json({error:{message:"Catch Error While Finding Gym In Gym",errorCode:500},success:false}).status(400)
+            })
 })
 module.exports=Router;

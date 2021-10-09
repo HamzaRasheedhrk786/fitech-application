@@ -2,13 +2,15 @@ const Joi=require('joi');
 
 // subscription Validation Schema
 const subscriptionValidation=Joi.object({
-    name:Joi.string().required().messages({
-        "string.empty": "Event Name Required",
-        "any.required": "Invalid Event Name"
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("name").required().messages({
+        "any.required": "Subscription Name Required",
+        "string.empty": "Invalid Subscription Name",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
-    description:Joi.string().required().messages({
-        "string.empty": "Subcription Description Required",
-        "any.required": "Invalid Description"
+    description:Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("description").required().messages({
+        "any.required": "Subscription Description Required",
+        "string.empty": "Invalid Subscription Description",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
     amount:Joi.number().required().messages({
         "string.empty": "Event amount Required",
@@ -42,13 +44,15 @@ const subscriptionEdit=Joi.object({
     _id:Joi.string().required().messages({
         "any.required": "Id Required"
     }),
-    name:Joi.string().required().messages({
-        "string.empty": "Event Name Required",
-        "any.required": "Invalid Event Name"
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("name").required().messages({
+        "any.required": "Subscription Name Required",
+        "string.empty": "Invalid Subscription Name",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
-    description:Joi.string().required().messages({
-        "string.empty": "Description Required",
-        "any.required": "Invalid Description"
+    description:Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("description").required().messages({
+        "any.required": "Subscription Description Required",
+        "string.empty": "Invalid Subscription Description",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
     amount:Joi.number().required().messages({
         "string.empty": "Event amount Required",

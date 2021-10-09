@@ -170,7 +170,7 @@ Router.get("/userSubscription",(req,res)=>{
         }
         else
         {
-            Subscription.findOne({userId:subscription.userId}).select({userId:subscription.userId}).populate("_id","name amount description image").populate("userId","firstName email userID").then(userFnf=>{
+            Subscription.findOne({userId:subscription.userId}).select({userId:subscription.userId}).populate("name amount description image").populate("userId","firstName email userID image").then(userFnf=>{
                 if(userFnf===null){
                     return res.json({error:{messsage:"User Not Exist In Subscription",errorCode:500},success:false}).status(400)
                 }

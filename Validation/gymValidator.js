@@ -3,13 +3,18 @@ const Joi= require('joi')
 const {ref} = require('joi')
 // input fields varification
 const addGymValidation = Joi.object({
+    images:Joi.string().messages({
+        "any.required": "Image File Required",
+        // "string.empty": "Image File Can't Empty",
+    }),
     ownerId:Joi.string().required().messages({
         "any.required": "Owner Required",
         "string.empty": "Owner Can't Empty",
     }),
-    name:Joi.string().required().messages({
-        "any.required": "Gym Name Required",
-        "string.empty": "Gym Name Can't Empty",
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("name").required().messages({
+        "any.required": "First Name Required",
+        "string.empty": "Invalid First Name",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
     city:Joi.string().required().messages({
         "any.required": "Gym Name Required",
