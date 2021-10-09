@@ -11,7 +11,7 @@ const signUpValidation = Joi.object({
     lastName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("lastName").required().messages({
         "any.required": "Last Name Required",
         "string.empty": "Invalid Last Name",
-        'string.pattern.base': '{#label} must be in aiphabets',
+        'string.pattern.base': '{#label} must be in aiphabets'
     }),
     email: Joi.string().email().required().messages({
         "any.required": "Email Required",
