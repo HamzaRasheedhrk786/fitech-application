@@ -5,7 +5,7 @@ const {addCheckInValidation}=require("../../Validation/checkInValidator")
 // getting response of checkIn server
 Router.get("/",(req,res)=>
 {
-    CheckIn.find().then(allRecords=>
+    CheckIn.find().populate("gym","name").populate("user","firstName image").then(allRecords=>
         {
             if(!allRecords)
             {
