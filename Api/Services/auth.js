@@ -24,8 +24,8 @@ Router.get("/record",(req,res)=>
 // Getting Particular Service Record Against Id
 Router.get("/singleRecord",(req,res)=>
 {
-    const {service} = req.body;
-    Service.findOne({_id:service._id}).then(recordFound=>
+    const {_id} = req.query;
+    Service.findOne({_id:_id}).then(recordFound=>
         {
             if(recordFound)
             {
@@ -37,6 +37,7 @@ Router.get("/singleRecord",(req,res)=>
             }
         }).catch(err=>
             {
+                console.log(err)
                 return res.json({error:{message:"Catch Error While Finding Services Record",errorCode:500},success:false}).status(400)
             })
 })

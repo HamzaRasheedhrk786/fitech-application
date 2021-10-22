@@ -260,8 +260,8 @@ Router.get("/allInactive/records",(req,res)=>
 // get all gym against owner
 Router.get("/owner/allgym",(req,res)=>
 {
-    const {gym}=req.body;
-    Owner.findOne({_id:gym.ownerId}).then(ownerFound=>
+    const {ownerId}=req.query;
+    Owner.findOne({_id:ownerId}).then(ownerFound=>
         {
             if(!ownerFound)
             {
@@ -269,7 +269,7 @@ Router.get("/owner/allgym",(req,res)=>
             }
             else
             {
-                Gym.find({ownerId:gym.ownerId}).populate("ownerId","name email").populate("services","name image").then(ownerGym=>
+                Gym.find({ownerId:ownerId}).populate("ownerId","name email").populate("services","name image").then(ownerGym=>
                     {
                         if(!ownerGym)
                         {
@@ -293,8 +293,8 @@ Router.get("/owner/allgym",(req,res)=>
 // get all gym against owner
 Router.get("/owner/allActiveGym",(req,res)=>
 {
-    const {gym}=req.body;
-    Owner.findOne({_id:gym.ownerId}).then(ownerFound=>
+    const {ownerId}=req.query;
+    Owner.findOne({_id:ownerId}).then(ownerFound=>
         {
             if(!ownerFound)
             {
@@ -302,7 +302,7 @@ Router.get("/owner/allActiveGym",(req,res)=>
             }
             else
             {
-                Gym.find({ownerId:gym.ownerId,status:"active"}).populate("ownerId","name email").populate("services","name image").then(ownerGym=>
+                Gym.find({ownerId:ownerId,status:"active"}).populate("ownerId","name email").populate("services","name image").then(ownerGym=>
                     {
                         if(!ownerGym)
                         {
@@ -326,8 +326,8 @@ Router.get("/owner/allActiveGym",(req,res)=>
 // get all gym against owner
 Router.get("/owner/allInactiveGym",(req,res)=>
 {
-    const {gym}=req.body;
-    Owner.findOne({_id:gym.ownerId}).then(ownerFound=>
+    const {ownerId}=req.query;
+    Owner.findOne({_id:ownerId}).then(ownerFound=>
         {
             if(!ownerFound)
             {
@@ -335,7 +335,7 @@ Router.get("/owner/allInactiveGym",(req,res)=>
             }
             else
             {
-                Gym.find({ownerId:gym.ownerId,status:"inactive"}).populate("ownerId","name email").populate("services","name image").then(ownerGym=>
+                Gym.find({ownerId:ownerId,status:"inactive"}).populate("ownerId","name email").populate("services","name image").then(ownerGym=>
                     {
                         if(!ownerGym)
                         {
@@ -407,8 +407,8 @@ Router.delete("/owner/deleteGym",(req,res)=>
 // Finding gym user agaisnt gym in checkin
 Router.get("/user",(req,res)=>
 {
-    const {gym} =req.body;
-    Gym.findOne({_id:gym.gym}).then(findGym=>
+    const {gym} =req.query;
+    Gym.findOne({_id:gym}).then(findGym=>
         {
             if(!findGym)
             {
@@ -416,7 +416,7 @@ Router.get("/user",(req,res)=>
             }
             else
             {
-                CheckIn.find({gym:gym.gym}).populate("user","firstName email image").then(userRecord=>
+                CheckIn.find({gym:gym}).populate("user","firstName email image").then(userRecord=>
                     {
                         if(userRecord)
                         {
@@ -439,8 +439,8 @@ Router.get("/user",(req,res)=>
 // total visits against gym
 Router.get("/visits",(req,res)=>
 {
-    const {gym} =req.body;
-    Gym.findOne({_id:gym.gym}).then(findGym=>
+    const {gym} =req.query;
+    Gym.findOne({_id:gym}).then(findGym=>
         {
             if(!findGym)
             {
@@ -448,11 +448,11 @@ Router.get("/visits",(req,res)=>
             }
             else
             {
-                CheckIn.find({gym:gym.gym,status:"active"}).count().then(userRecord=>
+                CheckIn.find({gym:gym,status:"active"}).count().then(userRecord=>
                     {
                         if(userRecord)
                         {
-                            return res.json({message:"User Record Found Against Gym",gymUser:userRecord,success:true}).status(200)
+                            return res.json({message:"User Record Found Against Gym",gymVisits:userRecord,success:true}).status(200)
                         }
                         else
                         {
@@ -471,8 +471,8 @@ Router.get("/visits",(req,res)=>
 // get gym revenue against gym
 Router.get("/revenue",(req,res)=>
 {
-    const {gym} =req.body;
-    Gym.findOne({_id:gym.gym}).then(findGym=>
+    const {gym} =req.query;
+    Gym.findOne({_id:gym}).then(findGym=>
         {
             if(!findGym)
             {
@@ -480,7 +480,7 @@ Router.get("/revenue",(req,res)=>
             }
             else
             {
-                CheckIn.find({gym:gym.gym,status:"active"}).count().then(userRecord=>
+                CheckIn.find({gym:gym,status:"active"}).count().then(userRecord=>
                     {
                         if(userRecord)
                         {
@@ -501,6 +501,51 @@ Router.get("/revenue",(req,res)=>
         }).catch(err=>
             {
                 return res.json({error:{message:"Catch Error While Finding Gym In Gym",errorCode:500},success:false}).status(400)
+            })
+})
+//  calculating vists against date
+Router.get("/visits/date",(req,res)=>
+{
+    const{gym,date}=req.query;
+    Gym.findOne({_id:gym}).then(gymFound=>
+        {
+            console.log(gymFound)
+            if(!gymFound)
+            {
+                return res.json({error:{message:"Gym Not Exist Against Id",errorCode:500},success:false}).status(400)   
+            }
+            else{
+                CheckIn.find({gym:gym}).then(GymRecord=>
+                    { 
+                        // console.log(GymRecord)
+                        if(!GymRecord)
+                        {
+                            return res.json({error:{message:"Gym Not Exist In CheckIn Against Id ",errorCode:500},success:false}).status(400)
+                        }
+                        else
+                        {
+                            CheckIn.find({checkInDate:date,status:"active"}).count().then(visitAgainstDate=>
+                                {
+                                    if(!visitAgainstDate)
+                                    {
+                                        return res.json({error:{message:"No Visit Exist Against This Date",errorCode:500},success:false}).status(400)
+                                    }
+                                    else{
+                                        return res.json({message:"Visits Exists Against Date",visits:visitAgainstDate,success:true}).status(200)
+                                    }
+                                }).catch(err=>
+                                    {
+                                        return res.json({error:{message:"Catch Error While Finding Visits Against Date In CheckIn",errorCode:500},success:false}).status(400)       
+                                    })
+                        }
+                    }).catch(err=>
+                        {
+                            return res.json({error:{message:"Catch Error While Finding Gym In CheckIn",errorCode:500},success:false}).status(400)
+                        })
+            }
+        }).catch(err=>
+            {
+                return res.json({error:{message:"Catch Error While Finding Gym",errorCode:500},success:false}).status(400)
             })
 })
 module.exports=Router;
