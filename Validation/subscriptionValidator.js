@@ -2,12 +2,12 @@ const Joi=require('joi');
 
 // subscription Validation Schema
 const subscriptionValidation=Joi.object({
-    name: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("name").required().messages({
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("name").required().messages({
         "any.required": "Subscription Name Required",
         "string.empty": "Invalid Subscription Name",
         'string.pattern.base': '{#label} must be in alphabets',
     }),
-    description:Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("description").required().messages({
+    description:Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("description").required().messages({
         "any.required": "Subscription Description Required",
         "string.empty": "Invalid Subscription Description",
         'string.pattern.base': '{#label} must be in alphabets',
@@ -44,12 +44,12 @@ const subscriptionEdit=Joi.object({
     _id:Joi.string().required().messages({
         "any.required": "Id Required"
     }),
-    name: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("name").required().messages({
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("name").required().messages({
         "any.required": "Subscription Name Required",
         "string.empty": "Invalid Subscription Name",
         'string.pattern.base': '{#label} must be in alphabets',
     }),
-    description:Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("description").required().messages({
+    description:Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("description").required().messages({
         "any.required": "Subscription Description Required",
         "string.empty": "Invalid Subscription Description",
         'string.pattern.base': '{#label} must be in alphabets',

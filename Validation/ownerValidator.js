@@ -3,7 +3,7 @@ const Joi= require('joi')
 const {ref} = require('joi')
 // input fields varification
 const signUpValidationOwner = Joi.object({
-    name: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("name").required().messages({
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("name").required().messages({
         "any.required": " Name Required",
         "string.empty": "Invalid Name",
         'string.pattern.base': '{#label} must be in alphabets',
@@ -112,18 +112,16 @@ const profileValidationOwner = Joi.object({
     _id:Joi.string().required().messages({
         "any.required": "Id Required",
     }),
-    name: Joi.string().required().messages({
-        "any.required": "First Name Required",
-        "string.empty": "Invalid First Name",
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("name").required().messages({
+        "any.required": " Name Required",
+        "string.empty": "Invalid Name",
+        'string.pattern.base': '{#label} must be in alphabets',
     }),
     email: Joi.string().required().messages({
         "any.required": "Last Name Required",
         "string.empty": "Invalid Last Name",
     }),
-    email:Joi.string().required().email().messages({
-        "any.required": "Email Required",
-        "string.email":"Invalid Email"
-    })
+  
 }).required().messages({
     "any.required": "Invalid Profile Data"
 })
