@@ -1,3 +1,3 @@
 module.exports ={
-    mongodbonline:"mongodb+srv://fitnessApp:fitnessApp@cluster0.8yfdg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    mongodbonline:"mongodb+srv://studentportal:studentportal@cluster0.mldmk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 }

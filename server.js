@@ -26,7 +26,7 @@ mongoose.connect(url,{useNewUrlParser:true,useUnifiedTopology:true})
         // return res.json({error:{message:"Ctach Error Database",errorCode:500},success:false}).status(400)
     })
 // defining port using env variable
-const Port = process.env.PORT || 5000;
+const Port = process.env.PORT || 6000;
 app.listen(Port, () => {
     console.log(`App Is Listening At Port ${Port}`);
 })
