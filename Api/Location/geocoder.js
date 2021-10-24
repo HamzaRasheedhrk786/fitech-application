@@ -18,7 +18,6 @@ const options = {
   // apiKey: 'm5WvGxLwKVwUkvVJjb2ZzAadfFPIURES',
   formatter: null
 }
- 
 const geocoder = NodeGeocoder(options);
  // Using callback
 // const res = await geocoder.geocode('29 champs elysée paris',function(err,res){
