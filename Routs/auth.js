@@ -19,6 +19,7 @@ Router.use("/service",require("../Api/Services/auth"))
 Router.use("/gym",require("../Api/Gym/auth"))
 // check in
 Router.use("/checkIn",require("../Api/CheckIns/auth"))
-
+// admin 
+Router.use("/admin",require("../Api/Admin/auth"))
 // module.exports=Router;
 module.exports =Router;

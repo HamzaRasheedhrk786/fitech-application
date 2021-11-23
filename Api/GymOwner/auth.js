@@ -9,6 +9,23 @@ const rn=require('random-number');
 const { signUpValidationOwner, loginValidationOwner, emailValidationOwner,emailVerificationOwner,resetOwnerPasswordValidation}=require('../../Validation/ownerValidator');
 const {SOCIAL, LOCAL}=require("../constVariables");
 
+// getting all owner record in system
+Router.get("/",(req,res)=>
+{
+    Owner.find().select("-emailVerify -verificationCode -accountType").then(allOwners=>{
+        if(!allOwners)
+        {
+            return res.json({error:{message:"Error While Finding Owners Data",errorCode:500},success:false}).status(400)
+        }
+        else
+        {
+            return res.json({message:"Gym Owner Records Exists In System",owner:allOwners,success:false}).status(200)
+        }
+    }).catch(err=>
+        {
+            return res.json({error:{message:"Catch Error While Finding Owners Data",errorCode:500},success:false}).status(400)
+        })
+})
 
 // sign up user
 Router.post("/signup",(req, res)=>{   

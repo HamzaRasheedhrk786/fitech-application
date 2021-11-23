@@ -19,7 +19,7 @@ const SchemaUserPayment=new Schema({
     },
     status:{
         type:String,
-        default:"active"
+        default:"pending"
     },
     paymentDate:{
         type:Date,

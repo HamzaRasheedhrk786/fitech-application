@@ -36,8 +36,14 @@ const SchemaOwner=new Schema({
 SchemaOwner.set('toJSON', {
     transform: function (doc, ret, options) {
         delete ret.password;
+        // delete ret.verificationCode;
         return ret; 
     }
 });
-
+// SchemaOwner.set('toJSON', {
+//     transform: function (doc, ret, options) {
+//         delete ret.verificationCode;
+//         return ret; 
+//     }
+// });
 module.exports=mongoose.model('tblowners', SchemaOwner);

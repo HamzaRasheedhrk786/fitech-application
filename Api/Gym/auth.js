@@ -191,6 +191,10 @@ Router.patch("/changeStatus",(req,res)=>
             {
                 return res.json({error:{message:"Gym Not Exist Against Id", errorCode:500}, success:false}).status(400);
             }
+            else if(findGym && findGym.status==="active")
+            {
+                return res.json({error:{message:"Gym Status Already Activate", errorCode:500}, success:false}).status(400);
+            }
             else
             {
                 Gym.findOneAndUpdate({_id:gym.gymId},{$set:{status:gym.status}}).then(updatedGym=>
@@ -203,10 +207,10 @@ Router.patch("/changeStatus",(req,res)=>
                         {
                             Gym.findOne({ _id:gym.gymId })
                             .then( foundGym => {
-                                return res.json({ msg: "Service Found and Update",  gym: foundGym, success: true })
+                                return res.json({ message: "Gym Found and Update",  gym: foundGym, success: true })
                             } )
                             .catch( err => {
-                            return res.json({ error: { message: "Catch Error, Getting Service", errorCode: 500 }, success: false }).status( 400 );
+                            return res.json({ error: { message: "Catch Error, Getting Gym", errorCode: 500 }, success: false }).status( 400 );
                             } )
                             
                         }
@@ -509,7 +513,6 @@ Router.get("/visits/date",(req,res)=>
     const{gym,date}=req.query;
     Gym.findOne({_id:gym}).then(gymFound=>
         {
-            console.log(gymFound)
             if(!gymFound)
             {
                 return res.json({error:{message:"Gym Not Exist Against Id",errorCode:500},success:false}).status(400)   
@@ -517,7 +520,7 @@ Router.get("/visits/date",(req,res)=>
             else{
                 CheckIn.find({gym:gym}).then(GymRecord=>
                     { 
-                        // console.log(GymRecord)
+                        console.log(GymRecord)
                         if(!GymRecord)
                         {
                             return res.json({error:{message:"Gym Not Exist In CheckIn Against Id ",errorCode:500},success:false}).status(400)
@@ -526,20 +529,24 @@ Router.get("/visits/date",(req,res)=>
                         {
                             CheckIn.find({checkInDate:date,status:"active"}).count().then(visitAgainstDate=>
                                 {
+                                    console.log("visis",visitAgainstDate)
                                     if(!visitAgainstDate)
                                     {
                                         return res.json({error:{message:"No Visit Exist Against This Date",errorCode:500},success:false}).status(400)
                                     }
                                     else{
+                                        console.log("visists",visitAgainstDate)
                                         return res.json({message:"Visits Exists Against Date",visits:visitAgainstDate,success:true}).status(200)
                                     }
                                 }).catch(err=>
                                     {
+                                        console.log(err)
                                         return res.json({error:{message:"Catch Error While Finding Visits Against Date In CheckIn",errorCode:500},success:false}).status(400)       
                                     })
                         }
                     }).catch(err=>
                         {
+                            console.log(err)
                             return res.json({error:{message:"Catch Error While Finding Gym In CheckIn",errorCode:500},success:false}).status(400)
                         })
             }
@@ -548,4 +555,37 @@ Router.get("/visits/date",(req,res)=>
                 return res.json({error:{message:"Catch Error While Finding Gym",errorCode:500},success:false}).status(400)
             })
 })
+// gym active user
+Router.get("/users",(req,res)=>
+{
+    const {gymId}=req.query;
+    Gym.findOne({gym:gymId}).then(gymFound=>
+        {
+            if(!gymFound)
+            {
+                return res.json({error:{message:"Gym Not Exists Against Id",errorCode:500},success:false}).status(400)
+            }
+            else
+            {
+                CheckIn.find({gym:gymId,status:"active"}).populate("user","firstName email image").then(gymFnd=>
+                    {
+                        if(!gymFnd)
+                        {
+                            return res.json({error:{message:"No Check In Record Exist Against Gym",errorCode:500},success:false}).status(400) 
+                        }
+                        else{
+                            return res.json({message:"User CheckIn Records Agaisnt Gym",users:gymFnd,success:true}).status(200) 
+                        }
+                    }).catch(err=>
+                        {
+                            return res.json({error:{message:"Catch Error, No Check In Record Exist Against Gym",errorCode:500},success:false}).status(400) 
+                        })
+            }
+        }).catch(err=>
+            {
+                return res.json({error:{message:"Catch Error, Gym Not Exists Against Id",errorCode:500},success:false}).status(400)
+            })
+
+})
+
 module.exports=Router;

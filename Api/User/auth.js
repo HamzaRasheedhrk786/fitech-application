@@ -34,7 +34,7 @@ Router.get("/records",(req,res)=>{
 })
 // server response
     Router.get("/",(req,res)=>{
-        User.find().then(findUser=>
+        User.find().select("-emailVerify -verificationCode -accountType").then(findUser=>
             {
                 // console.log(findUser*1234)
                 if(findUser)

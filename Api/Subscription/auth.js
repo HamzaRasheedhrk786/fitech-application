@@ -223,6 +223,10 @@ Router.patch("/assignSubscriptionUser",(req,res)=>{
                                                 {
                                                     return res.json({error:{message:"You cant Assign Subscription Because User Payement Status Is Inactive",errorCode:500},success:false}).status(400)
                                                 }
+                                                else if(singleUser && singleUser.status==="pending")
+                                                {
+                                                    return res.json({error:{message:"You cant Assign Subscription Because User Payement Status Is Pending",errorCode:500},success:false}).status(400)
+                                                }
                                                 else if(singleUser.subscriptionId==subscription._id) 
                                             {
                                                 UserPayment.findOne({userId:subscription.userId},{status:"active"}).then(userFnd=>{
