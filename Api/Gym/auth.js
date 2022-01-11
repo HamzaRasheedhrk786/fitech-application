@@ -460,7 +460,7 @@ Router.get("/visits",(req,res)=>
                         }
                         else
                         {
-                            return res.json({error:{message:"Erroe While Finding Gym User",errorCode:500},success:false}).status(400)
+                            return res.json({error:{message:"No Visits Exists Against Gym",errorCode:500},success:false}).status(400)
                         }
                     }).catch(err=>
                         {
@@ -495,7 +495,7 @@ Router.get("/revenue",(req,res)=>
                         }
                         else
                         {
-                            return res.json({error:{message:"Erroe While Finding Gym User",errorCode:500},success:false}).status(400)
+                            return res.json({error:{message:"No Revenue Exists Against Gym",errorCode:500},success:false}).status(400)
                         }
                     }).catch(err=>
                         {

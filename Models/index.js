@@ -7,6 +7,7 @@ const UserLocation=require("./location")
 const Service=require("./service")
 const Gym=require("./gym")
 const CheckIn=require("./checkIn")
+const OwnerPayment=require("./ownerPayment")
 module.exports = {
    
     User,
@@ -17,5 +18,6 @@ module.exports = {
     UserLocation,
     Service,
     Gym,
-    CheckIn
+    CheckIn,
+    OwnerPayment
 }

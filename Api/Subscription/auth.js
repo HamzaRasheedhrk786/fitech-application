@@ -341,8 +341,8 @@ Router.patch("/cancelSubscriptionUser",(req,res)=>{
                         console.log("timediff",diffTime)
                         let diffDays=Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                         console.log(diffDays)
-                        console.log("diff",(diffDays===3))
-                           if(diffDays===3)
+                        console.log("diff",(diffDays>=30))
+                           if(diffDays>=30)
                            {
                                UserPayment.findOneAndUpdate({userId:subscription.userId},{$set:{status:"inactive"}}).sort({_id:-1}).then(fnd=>{
                                    console.log("aas")
