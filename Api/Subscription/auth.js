@@ -90,7 +90,7 @@ Router.patch("/updateSubscription",upload.array('uploadImage',1),(req,res)=>{
                             console.log( updateSubscription.n );
                             Subscription.findOne({_id:subscription._id})
                                 .then(foundSubscription=>{
-                                    if(updateSubscription.n===1){
+                                    if(updateSubscription){
                                         return res.json({message:"Subscription Updated",subscription:foundSubscription, success:true}).status(200)
                                     }
                                     else{
