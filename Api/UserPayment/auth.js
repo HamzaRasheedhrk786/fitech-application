@@ -150,7 +150,7 @@ Router.post("/payment", myUpload.array('uploadUserPaymentImage',1),(req, res)=>{
                            {
                                UserPayment.findOne({userId:userPayment.userId}).sort({_id:-1}).limit(1).then(userPay=>{
                                    console.log("users",userPay)
-                                   if(userPay!==null && userPay.status==="active")
+                                   if(userPay!==null && userPay.status==="active" || userPay.status==="pending")
                                    {
                                     return res.json({error:{message:"User Already Had Active Payment Record",errorCode:500},success:false}).status(400)
                                    }
@@ -182,6 +182,7 @@ Router.post("/payment", myUpload.array('uploadUserPaymentImage',1),(req, res)=>{
                                         return res.json({error:{message:"Payment Not Added",err, errorCode: 500}, success:false}).status(500)
                                 })
                                    }
+                                
                                }).catch(err=>{
                                 return res.json({error:{message:"Catch Error While Finding User In Payment Table",errorCode:500},success:false}).status(400)
                                })
