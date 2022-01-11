@@ -8,7 +8,6 @@ const rn=require('random-number');
 // const {OAuth2Client}=require('google-auth-library');
 const { signUpValidationOwner, loginValidationOwner, emailValidationOwner,emailVerificationOwner,resetOwnerPasswordValidation}=require('../../Validation/ownerValidator');
 const {SOCIAL, LOCAL}=require("../constVariables");
-
 // getting all owner record in system
 Router.get("/",(req,res)=>
 {
