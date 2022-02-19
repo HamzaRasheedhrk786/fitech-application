@@ -150,9 +150,27 @@ Router.post("/payment", myUpload.array('uploadUserPaymentImage',1),(req, res)=>{
                            {
                                UserPayment.findOne({userId:userPayment.userId}).sort({_id:-1}).limit(1).then(userPay=>{
                                    console.log("users",userPay)
-                                   if(userPay!==null && userPay.status==="active" || userPay.status==="pending")
+                                    if(userPay===null)
+                                   {
+                                    const addPayment=new UserPayment({
+                                        subscriptionId:userPayment.subscriptionId,
+                                        userId:userPayment.userId,
+                                        amount:newEvent.amount,
+                                        image:url
+                                    })     
+                                    addPayment.save().then(savePay=>{
+                                        return  res.json({message:"Payment Added", userPayment: savePay, success:true}).status(200);
+                                    }).catch(err=>{
+                                        return res.json({error:{message:"Payment Not Added",err, errorCode: 500}, success:false}).status(500)
+                                })
+                                   }
+                                  else if(userPay!==null && userPay.status==="active")
                                    {
                                     return res.json({error:{message:"User Already Had Active Payment Record",errorCode:500},success:false}).status(400)
+                                   }
+                                   else if (userPay!==null && userPay.status==="pending")
+                                   {
+                                    return res.json({error:{message:"User Payment Status Pending, Needs Activation By Admin",errorCode:500},success:false}).status(400)
                                    }
                                    else if (userPay!==null && userPay.status==="inactive")
                                    {
@@ -168,22 +186,10 @@ Router.post("/payment", myUpload.array('uploadUserPaymentImage',1),(req, res)=>{
                                         return res.json({error:{message:"Payment Not Added",err, errorCode: 500}, success:false}).status(500)
                                 })
                                    }
-                                   else if(userPay===null)
-                                   {
-                                    const addPayment=new UserPayment({
-                                        subscriptionId:userPayment.subscriptionId,
-                                        userId:userPayment.userId,
-                                        amount:newEvent.amount,
-                                        image:url
-                                    })     
-                                    addPayment.save().then(savePay=>{
-                                        return  res.json({message:"Payment Added", userPayment: savePay, success:true}).status(200);
-                                    }).catch(err=>{
-                                        return res.json({error:{message:"Payment Not Added",err, errorCode: 500}, success:false}).status(500)
-                                })
-                                   }
+                                   
                                 
                                }).catch(err=>{
+                                   console.log(err)
                                 return res.json({error:{message:"Catch Error While Finding User In Payment Table",errorCode:500},success:false}).status(400)
                                })
                            }

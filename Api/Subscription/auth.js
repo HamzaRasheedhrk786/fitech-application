@@ -130,6 +130,41 @@ Router.get("/searchSubscription",(req,res)=>{
 // Delete Subscription
 Router.delete("/deleteSubscription",(req,res)=>{
     const {subscription}= req.body;
+    Subscription.findOne({_id:subscription._id}).then(subExists=>
+        {
+            console.log("sub",subExists)
+            if(!subExists)
+            {
+                return res.json({error:{message:"Subscription Not Exists Against Id",errorCode:500},success:false}).status(400)
+            }
+            else if (subExists.userId==null)
+            {
+                
+                Subscription.findByIdAndRemove({_id:subscription._id}).then(findSub=>
+                    {
+                        if(findSub)
+                        {
+                            return res.json({message:"Subscription Deleted Successfully",subscription:findSub}).status(200)
+                        }
+                        else
+                        {
+                            return res.json({message:"Subscription Deletion Failed",subscription:findSub}).status(200)
+                        }
+    
+                    }).catch(err=>
+                        {
+                            return res.json({error:{message:"Catch Error While Removing Subscription Against Id",errorCode:500},success:false}).status(400)
+                        })
+            }
+            else
+            {
+                console.log("user",subExists.userId)
+                return res.json({error:{message:"You Can't Delete Subscription Because It Has Users",errorCode:500},success:false}).status(400)
+            }
+        }).catch(err=>{
+            console.log(err)
+            return res.json({error:{message:"Catch Error Subscription Not Exists Against Id",errorCode:500},success:false}).status(400)
+        })
     // Subscription.findOne({userId:subscription.userId}).then(userExist=>
     //     {
     //         if(userExist!==null)
@@ -138,26 +173,30 @@ Router.delete("/deleteSubscription",(req,res)=>{
     //         }
     //         else
     //         {
-                Subscription.findByIdAndRemove({_id:subscription._id}).then(findSubscription=>
-                    {
-                        if(!findSubscription)
-                        {
-                            return res.json({error:{message:"You Can't Delete Because Subscription not Exists",errorCode:500},success:false}).status(400);
-                        }
-                        else if(findSubscription.userId!==null){
-                            return res.json({error:{message:"You Can't Delete Because Subscription Had User",errorCode:500},success:false}).status(400);
-                        }
-                        else{
-                            return res.json({message:"Subscription Deleted Successfully",subscription:findSubscription,success:true}).status(200);
-                        }
-                    }).catch(err=>
-                        {
-                            return res.json({error:{message:"Catch Error while finding subscription against id",errorCode:500},success:false}).status(400);
-                        })
-        //     }
-        // }).catch(err=>{
-        //     return res.json({error:{message:"Catch While Error Finding User In Subscription",errorCode:500},success:false}).status(400);
-        // })
+    //             Subscription.findByIdAndRemove({_id:subscription._id}).then(findSubscription=>
+    //                 {
+    //                     console.log(findSubscription)
+    //                     if(!findSubscription)
+    //                     {
+    //                         console.log("subcriptoin not exist")
+    //                         return res.json({error:{message:"You Can't Delete Because Subscription not Exists",errorCode:500},success:false}).status(400);
+    //                     }
+    //                     else if(findSubscription.userId!==null){
+    //                         console.log("subcriptoin not have user")
+
+    //                         return res.json({error:{message:"You Can't Delete Because Subscription Had User",errorCode:500},success:false}).status(400);
+    //                     }
+    //                     else{
+    //                         return res.json({message:"Subscription Deleted Successfully",subscription:findSubscription,success:true}).status(200);
+    //                     }
+    //                 }).catch(err=>
+    //                     {
+    //                         return res.json({error:{message:"Catch Error while finding subscription against id",errorCode:500},success:false}).status(400);
+    //                     })
+    //         }
+    //     }).catch(err=>{
+    //         return res.json({error:{message:"Catch While Error Finding User In Subscription",errorCode:500},success:false}).status(400);
+    //     })
     
 })
 // getting subscription of particular user

@@ -172,7 +172,9 @@ Router.post("/signup",(req, res)=>{
             }).catch(err=>{
                 return res.json({error:{message:"Catch Error While Finding Email In Owner",errorCode:500},success:false}).status(400);
             })   
-        })
+        }).catch(err=>{
+            return res.json({error:{message:"Catch Error While Finding Email In User",errorCode:500},success:false}).status(400);
+        }) 
     })
     .catch( err => {
         if( err.isJoi === true ){
