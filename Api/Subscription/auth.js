@@ -132,35 +132,41 @@ Router.delete("/deleteSubscription",(req,res)=>{
     const {subscription}= req.body;
     Subscription.findOne({_id:subscription._id}).then(subExists=>
         {
-            console.log("sub",subExists)
+            
+            console.log("user",subExists.userId==[])
             if(!subExists)
             {
                 return res.json({error:{message:"Subscription Not Exists Against Id",errorCode:500},success:false}).status(400)
             }
-            else if (subExists.userId==null)
-            {
-                
-                Subscription.findByIdAndRemove({_id:subscription._id}).then(findSub=>
-                    {
-                        if(findSub)
-                        {
-                            return res.json({message:"Subscription Deleted Successfully",subscription:findSub}).status(200)
-                        }
-                        else
-                        {
-                            return res.json({message:"Subscription Deletion Failed",subscription:findSub}).status(200)
-                        }
-    
-                    }).catch(err=>
-                        {
-                            return res.json({error:{message:"Catch Error While Removing Subscription Against Id",errorCode:500},success:false}).status(400)
-                        })
-            }
             else
             {
-                console.log("user",subExists.userId)
-                return res.json({error:{message:"You Can't Delete Subscription Because It Has Users",errorCode:500},success:false}).status(400)
+                let array= subExists.userId
+                console.log("sub",array)
+                if(array.length===0)
+                {
+                    Subscription.findByIdAndRemove({_id:subscription._id}).then(findSub=>
+                        {
+                            if(findSub)
+                            {
+                                return res.json({message:"Subscription Deleted Successfully",subscription:findSub}).status(200)
+                            }
+                            else
+                            {
+                                return res.json({message:"Subscription Deletion Failed",subscription:findSub}).status(200)
+                            }
+        
+                        }).catch(err=>
+                            {
+                                return res.json({error:{message:"Catch Error While Removing Subscription Against Id",errorCode:500},success:false}).status(400)
+                            })
+                }
+                else
+                    {
+                        console.log("user",subExists.userId)
+                        return res.json({error:{message:"You Can't Delete Subscription Because It Has Users",errorCode:500},success:false}).status(400)
+                    }
             }
+            
         }).catch(err=>{
             console.log(err)
             return res.json({error:{message:"Catch Error Subscription Not Exists Against Id",errorCode:500},success:false}).status(400)
