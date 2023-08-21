@@ -232,8 +232,8 @@ Router.post("/forgotPassword", (req,res)=>{
                         service:"gmail",
                         host: "smtp.gmail.com",
                         auth: {
-                          user: 'pifitorfit@gmail.com', // generated ethereal user
-                          pass: 'WEAREnumber1@', // generated ethereal password
+                          user: 'rasheedh673@gmail.com', // generated ethereal user
+                          pass: 'omtaxmigpznvyatz', // generated ethereal password
                         },
                     });
                     //Generate Random Number 
