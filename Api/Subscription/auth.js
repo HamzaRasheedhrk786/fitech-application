@@ -90,7 +90,7 @@ Router.patch("/updateSubscription",upload.array('uploadImage',1),(req,res)=>{
                             console.log( updateSubscription.n );
                             Subscription.findOne({_id:subscription._id})
                                 .then(foundSubscription=>{
-                                    if(updateSubscription.n===1){
+                                    if(updateSubscription){
                                         return res.json({message:"Subscription Updated",subscription:foundSubscription, success:true}).status(200)
                                     }
                                     else{
@@ -130,6 +130,47 @@ Router.get("/searchSubscription",(req,res)=>{
 // Delete Subscription
 Router.delete("/deleteSubscription",(req,res)=>{
     const {subscription}= req.body;
+    Subscription.findOne({_id:subscription._id}).then(subExists=>
+        {
+            
+            console.log("user",subExists.userId==[])
+            if(!subExists)
+            {
+                return res.json({error:{message:"Subscription Not Exists Against Id",errorCode:500},success:false}).status(400)
+            }
+            else
+            {
+                let array= subExists.userId
+                console.log("sub",array)
+                if(array.length===0)
+                {
+                    Subscription.findByIdAndRemove({_id:subscription._id}).then(findSub=>
+                        {
+                            if(findSub)
+                            {
+                                return res.json({message:"Subscription Deleted Successfully",subscription:findSub}).status(200)
+                            }
+                            else
+                            {
+                                return res.json({message:"Subscription Deletion Failed",subscription:findSub}).status(200)
+                            }
+        
+                        }).catch(err=>
+                            {
+                                return res.json({error:{message:"Catch Error While Removing Subscription Against Id",errorCode:500},success:false}).status(400)
+                            })
+                }
+                else
+                    {
+                        console.log("user",subExists.userId)
+                        return res.json({error:{message:"You Can't Delete Subscription Because It Has Users",errorCode:500},success:false}).status(400)
+                    }
+            }
+            
+        }).catch(err=>{
+            console.log(err)
+            return res.json({error:{message:"Catch Error Subscription Not Exists Against Id",errorCode:500},success:false}).status(400)
+        })
     // Subscription.findOne({userId:subscription.userId}).then(userExist=>
     //     {
     //         if(userExist!==null)
@@ -138,26 +179,30 @@ Router.delete("/deleteSubscription",(req,res)=>{
     //         }
     //         else
     //         {
-                Subscription.findByIdAndRemove({_id:subscription._id}).then(findSubscription=>
-                    {
-                        if(!findSubscription)
-                        {
-                            return res.json({error:{message:"You Can't Delete Because Subscription not Exists",errorCode:500},success:false}).status(400);
-                        }
-                        else if(findSubscription.userId!==null){
-                            return res.json({error:{message:"You Can't Delete Because Subscription Had User",errorCode:500},success:false}).status(400);
-                        }
-                        else{
-                            return res.json({message:"Subscription Deleted Successfully",subscription:findSubscription,success:true}).status(200);
-                        }
-                    }).catch(err=>
-                        {
-                            return res.json({error:{message:"Catch Error while finding subscription against id",errorCode:500},success:false}).status(400);
-                        })
-        //     }
-        // }).catch(err=>{
-        //     return res.json({error:{message:"Catch While Error Finding User In Subscription",errorCode:500},success:false}).status(400);
-        // })
+    //             Subscription.findByIdAndRemove({_id:subscription._id}).then(findSubscription=>
+    //                 {
+    //                     console.log(findSubscription)
+    //                     if(!findSubscription)
+    //                     {
+    //                         console.log("subcriptoin not exist")
+    //                         return res.json({error:{message:"You Can't Delete Because Subscription not Exists",errorCode:500},success:false}).status(400);
+    //                     }
+    //                     else if(findSubscription.userId!==null){
+    //                         console.log("subcriptoin not have user")
+
+    //                         return res.json({error:{message:"You Can't Delete Because Subscription Had User",errorCode:500},success:false}).status(400);
+    //                     }
+    //                     else{
+    //                         return res.json({message:"Subscription Deleted Successfully",subscription:findSubscription,success:true}).status(200);
+    //                     }
+    //                 }).catch(err=>
+    //                     {
+    //                         return res.json({error:{message:"Catch Error while finding subscription against id",errorCode:500},success:false}).status(400);
+    //                     })
+    //         }
+    //     }).catch(err=>{
+    //         return res.json({error:{message:"Catch While Error Finding User In Subscription",errorCode:500},success:false}).status(400);
+    //     })
     
 })
 // getting subscription of particular user
@@ -222,6 +267,10 @@ Router.patch("/assignSubscriptionUser",(req,res)=>{
                                                 if(singleUser && singleUser.status==="inactive")
                                                 {
                                                     return res.json({error:{message:"You cant Assign Subscription Because User Payement Status Is Inactive",errorCode:500},success:false}).status(400)
+                                                }
+                                                else if(singleUser && singleUser.status==="pending")
+                                                {
+                                                    return res.json({error:{message:"You cant Assign Subscription Because User Payement Status Is Pending",errorCode:500},success:false}).status(400)
                                                 }
                                                 else if(singleUser.subscriptionId==subscription._id) 
                                             {
@@ -337,8 +386,8 @@ Router.patch("/cancelSubscriptionUser",(req,res)=>{
                         console.log("timediff",diffTime)
                         let diffDays=Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                         console.log(diffDays)
-                        console.log("diff",(diffDays===3))
-                           if(diffDays===3)
+                        console.log("diff",(diffDays>=30))
+                           if(diffDays>=30)
                            {
                                UserPayment.findOneAndUpdate({userId:subscription.userId},{$set:{status:"inactive"}}).sort({_id:-1}).then(fnd=>{
                                    console.log("aas")

@@ -34,7 +34,7 @@ Router.get("/records",(req,res)=>{
 })
 // server response
     Router.get("/",(req,res)=>{
-        User.find().then(findUser=>
+        User.find().select("-emailVerify -verificationCode -accountType").then(findUser=>
             {
                 // console.log(findUser*1234)
                 if(findUser)
@@ -172,7 +172,9 @@ Router.post("/signup",(req, res)=>{
             }).catch(err=>{
                 return res.json({error:{message:"Catch Error While Finding Email In Owner",errorCode:500},success:false}).status(400);
             })   
-        })
+        }).catch(err=>{
+            return res.json({error:{message:"Catch Error While Finding Email In User",errorCode:500},success:false}).status(400);
+        }) 
     })
     .catch( err => {
         if( err.isJoi === true ){

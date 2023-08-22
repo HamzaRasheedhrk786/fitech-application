@@ -3,12 +3,12 @@ const Joi= require('joi')
 const {ref} = require('joi')
 // input fields varification
 const signUpValidation = Joi.object({
-    firstName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("firstName").required().messages({
+    firstName: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("firstName").required().messages({
         "any.required": "First Name Required",
         "string.empty": "Invalid First Name",
         'string.pattern.base': '{#label} must be in alphabets',
     }),
-    lastName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("lastName").required().messages({
+    lastName: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("lastName").required().messages({
         "any.required": "Last Name Required",
         "string.empty": "Invalid Last Name",
         'string.pattern.base': '{#label} must be in aiphabets'
@@ -102,12 +102,12 @@ const profileValidation = Joi.object({
     _id:Joi.string().required().messages({
         "any.required": "Id Required",
     }),
-    firstName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("firstName").required().messages({
+    firstName: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("firstName").required().messages({
         "any.required": "First Name Required",
         "string.empty": "Invalid First Name",
         'string.pattern.base': '{#label} must be in alphabets',
     }),
-    lastName: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("lastName").required().messages({
+    lastName: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("lastName").required().messages({
         "any.required": "Last Name Required",
         "string.empty": "Invalid Last Name",
         'string.pattern.base': '{#label} must be in number',

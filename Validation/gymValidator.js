@@ -11,7 +11,7 @@ const addGymValidation = Joi.object({
         "any.required": "Owner Required",
         "string.empty": "Owner Can't Empty",
     }),
-    name: Joi.string().pattern(new RegExp(/^[a-zA-Z]+$/)).label("name").required().messages({
+    name: Joi.string().pattern(new RegExp(/^[a-zA-Z\s]*$/)).label("name").required().messages({
         "any.required": "First Name Required",
         "string.empty": "Invalid First Name",
         'string.pattern.base': '{#label} must be in alphabets',
